@@ -1,11 +1,8 @@
-import "./db";
 import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouters";
 import videoRouter from "./routers/videoRouters";
 import userRouter from "./routers/userRouters";
-
-const PORT = 4000;
 
 const app = express();
 
@@ -19,7 +16,4 @@ app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 app.use("/", globalRouter);
 
-const handleListening = () =>
-  console.log(`✅ Server listening on http://localhost:${PORT} ✅`);
-
-app.listen(PORT, handleListening);
+export default app;
