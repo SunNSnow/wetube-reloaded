@@ -1,0 +1,9 @@
+extends ../templates/base
+include ../mixins/video
+
+block content
+  ul 
+    each video in user.videos
+      +video(video)
+    else 
+      li Sorry, No Video Found.

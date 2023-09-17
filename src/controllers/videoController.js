@@ -1,31 +1,44 @@
+import mongoose from "mongoose";
+
 import Video from "../models/Video";
+import User from "../models/User";
 
 export const home = async (req, res) => {
   const videos = await Video.find({}).sort({ createdAt: "desc" });
-  return res.render("home", { pageTitle: "Home", videos });
+  return res.render("videos/home", { pageTitle: "Home", videos });
 };
 
 export const watch = async (req, res) => {
   const { id } = req.params;
-  const video = await Video.findById(id);
+  const video = await Video.findById(id).populate("owner");
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video Not Found" });
   }
-  return res.render("watch", { pageTitle: video.title, video });
+  return res.render("videos/watch", { pageTitle: video.title, video });
 };
 
 export const getEdit = async (req, res) => {
-  const { id } = req.params;
+  const {
+    session: {
+      user: { _id },
+    },
+    params: { id },
+  } = req;
   const video = await Video.findById(id);
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video Not Found" });
   }
-  return res.render("edit", { pageTitle: "Editing", video });
+  if (String(video.owner) !== _id) {
+    return res.status(403).redirect("/");
+  }
+  return res.render("videos/edit", { pageTitle: "Editing", video });
 };
 
 export const postEdit = async (req, res) => {
-  const { id } = req.params;
-  const { title, description, hashtags } = req.body;
+  const {
+    body: { title, description, hashtags },
+    params: { id },
+  } = req;
   const video = await Video.exists({ _id: id });
   if (!video) {
     return res.status(404).render("404", { pageTitle: "Video Not Found" });
@@ -39,21 +52,32 @@ export const postEdit = async (req, res) => {
 };
 
 export const getUpload = (req, res) => {
-  return res.render("upload", { pageTitle: "Upload Video" });
+  return res.render("videos/upload", { pageTitle: "Upload Video" });
 };
 
 export const postUpload = async (req, res) => {
-  const { title, description, hashtags } = req.body;
+  const {
+    session: {
+      user: { _id },
+    },
+    file: { path: fileURL },
+    body: { title, description, hashtags },
+  } = req;
   try {
-    await Video.create({
+    const newVideo = await Video.create({
       title,
       description,
       hashtags: Video.formatHashtags(hashtags),
+      fileURL,
+      owner: _id,
     });
+    const user = await User.findById(_id);
+    user.videos.push(newVideo._id);
+    user.save();
     return res.redirect("/");
   } catch (error) {
     console.log(error);
-    return res.status(400).render("upload", {
+    return res.status(400).render("videos/upload", {
       pageTitle: "Upload Video",
       errorMessage: error._message,
     });
@@ -61,8 +85,22 @@ export const postUpload = async (req, res) => {
 };
 
 export const deleteVideo = async (req, res) => {
-  const { id } = req.params;
+  const {
+    session: {
+      user: { _id },
+    },
+    params: { id },
+  } = req;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.status(404).render("404", { pageTitle: "Video Not Found." });
+  } else if (String(video.owner) !== _id) {
+    return res.status(403).redirect("/");
+  }
   await Video.findByIdAndDelete(id);
+  const user = await User.findById(_id);
+  user.videos.splice(user.videos.indexOf(new mongoose.Types.ObjectId(id)), 1);
+  user.save();
   return res.redirect("/");
 };
 
@@ -74,5 +112,5 @@ export const search = async (req, res) => {
       title: { $regex: new RegExp(keyword, "i") },
     });
   }
-  return res.render("search", { pageTitle: "Search", videos });
+  return res.render("videos/search", { pageTitle: "Search", videos });
 };
