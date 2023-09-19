@@ -2,9 +2,13 @@ extends ../templates/base
 include ../mixins/video
 
 block content
-  form(method="GET")
+  form(method="GET").search__form
     input(placeholder="Search by Title", name="keyword", type="text")
-    button Search Now
+    button 
+      i.fa-solid.fa-magnifying-glass
 
-  each video in videos 
-    +video(video)
+  div.video-grid
+    each video in videos 
+      +video(video)
+    else 
+      span.empty__message No Video Found.

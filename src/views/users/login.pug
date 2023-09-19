@@ -6,11 +6,9 @@ block content
   form(method="POST")
     input(name="username", type="text", required, placeholder="Username")
     input(name="password", type="password", required, placeholder="Password")
-    button Log In
-    br
-    a(href="users/github/start") Continue with Github &rarr;
+    input(type="submit", value="Log In")
+    include ../partials/social-login
   hr
-  div 
+  div.auth-switch
     span Don't have an account?
-    br
     a(href="/join") Join Now &rarr;

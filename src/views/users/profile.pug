@@ -2,7 +2,13 @@ extends ../templates/base
 include ../mixins/video
 
 block content
-  ul 
+  div.profile__data 
+    if loggedInUser.socialOnly       
+      img(src=loggedInUser.avatarURL).avatar
+    else
+      img(src=`/${loggedInUser.avatarURL}`).avatar
+    h3=user.name
+  div.video-grid
     each video in user.videos
       +video(video)
     else 

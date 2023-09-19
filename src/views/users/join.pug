@@ -10,9 +10,8 @@ block content
     input(name="password", type="password", required, placeholder="Password")
     input(name="password2", type="password", required, placeholder="Confirm Password")
     input(name="location", type="text", placeholder="Location")
-    button Join
-  hr
-  div 
+    input(type="submit", value="Join")
+    include ../partials/social-login
+  div.auth-switch 
     span Already have an account?
-    br
     a(href="/login") Log In Now &rarr;

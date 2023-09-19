@@ -2,8 +2,8 @@ extends ../templates/base
 include ../mixins/video
 
 block content 
-  ul 
+  div.video-grid
     each video in videos
       +video(video)
     else 
-      li Sorry, No Video Found.
+      span.emty__message No Videos Found.
