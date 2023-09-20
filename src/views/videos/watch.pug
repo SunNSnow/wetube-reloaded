@@ -1,7 +1,7 @@
 extends ../templates/base
 
 block content 
-  div#videoContainer
+  div#videoContainer(data-id=video._id)
     video(src=`/${video.fileURL}`)
     div#videoControls.videoControls
       div.videoControls__play
