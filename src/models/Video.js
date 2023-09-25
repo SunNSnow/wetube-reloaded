@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const videoSchema = new mongoose.Schema({
   fileURL: { type: String, required: true },
+  thumbURL: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true, trim: true },
   createdAt: { type: Date, required: true, default: Date.now },
