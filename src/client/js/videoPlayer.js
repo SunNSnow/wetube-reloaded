@@ -109,6 +109,7 @@ const handleMouseLeave = () => {
 };
 
 const shortKey = (event) => {
+  if (event.target.tagName.toLowerCase() === "textarea") return;
   const { code } = event;
   if (code === "Space") {
     event.preventDefault();

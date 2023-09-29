@@ -7,8 +7,8 @@ import MongoStore from "connect-mongo";
 import rootRouter from "./routers/rootRouters";
 import videoRouter from "./routers/videoRouters";
 import userRouter from "./routers/userRouters";
+import apiRouter from "./routers/apiRouter";
 import { localsMiddleware } from "./middlewares";
-import apiRouter from "./client/js/apiRouter";
 
 const app = express();
 
@@ -18,6 +18,7 @@ app.set("view engine", "pug");
 app.set("views", `${process.cwd()}/src/views`);
 app.use(logger);
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(
   session({
