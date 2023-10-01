@@ -137,8 +137,8 @@ export const finishGithubLogIn = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  req.session.destroy();
   req.flash("info", "You just Log Out.");
+  req.session.destroy();
   return res.redirect("/");
 };
 
@@ -169,9 +169,9 @@ export const postEdit = async (req, res) => {
     session: {
       user: { _id, avatarURL },
     },
+    body: { name, email, username, location },
     file,
   } = req;
-  const { name, email, username, location } = req.body;
   const pageTitle = "Edit Profile";
   const updatingUser = req.session.user;
   if (updatingUser.username !== username) {
@@ -198,7 +198,11 @@ export const postEdit = async (req, res) => {
       email,
       username,
       location,
-      avatarURL: file ? file.path : avatarURL,
+      avatarURL: file
+        ? process.env.NODE_ENV
+          ? file.location
+          : file.path
+        : avatarURL,
     },
     { new: true }
   );
