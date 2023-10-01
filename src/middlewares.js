@@ -32,9 +32,20 @@ export const avatarUpload = multer({
   },
 });
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/videos");
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = Date.now() + "-" + Math.floor(Math.random() * 1e9);
+    const extension = "." + file.mimetype.slice("video/".length);
+    cb(null, uniqueName + extension);
+  },
+});
+
 export const videoUpload = multer({
-  dest: "uploads/videos/",
+  storage: storage,
   limits: {
-    fileSize: 1000000000,
+    fileSize: 10000000,
   },
 });
