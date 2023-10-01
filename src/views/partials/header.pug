@@ -18,7 +18,7 @@ header
             if loggedInUser.avatarURL === ""
               span 😀
             else 
-              if loggedInUser.socialOnly       
+              if loggedInUser.avatarURL.includes("github")       
                 img(src=loggedInUser.avatarURL).header__avatar
               else
                 img(src=`/${loggedInUser.avatarURL}`).header__avatar
